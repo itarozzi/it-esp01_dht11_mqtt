@@ -21,8 +21,11 @@ const char* mqtt_passwd = "rpi201701!";
 const char* clientID = "NodeMCUDevKit";
 
 
-const char* outTopic = "rpi201701/esp01/temp";
-const char* inTopic = "rpi201701/esp01/in";
+const char* outTopicTemp = "rasp201701/esp01/temperatura";
+const char* outTopicUmid = "rasp201701/esp01/umidita";
+const char* outTopicAnn = "rasp201701/esp01/announcement";
+
+const char* inTopic = "rasp201701/esp01/in";
 
 // Initialize DHT sensor
 // NOTE: For working with a faster than ATmega328p 16 MHz Arduino chip, like an ESP8266,
@@ -79,13 +82,13 @@ void callback(char* topic, byte* payload, unsigned int length) {
     Serial.print("Sending temperature:");
     Serial.println(temp_c);
     dtostrf(temp_c , 2, 2, msg);
-    client.publish(outTopic, msg);
+    client.publish(outTopicTemp, msg);
   } else if (message == "humidity"){
     gettemperature();
     Serial.print("Sending humidity:");
     Serial.println(humidity);
     dtostrf(humidity , 2, 2, msg);
-    client.publish(outTopic, msg);
+    client.publish(outTopicUmid, msg);
   }
 
 }
@@ -98,7 +101,7 @@ void reconnect() {
     if (client.connect(clientID, mqtt_user, mqtt_passwd)) {
       Serial.println("connected");
       // Once connected, publish an announcement...
-      client.publish(outTopic, clientID);
+      client.publish(outTopicAnn, clientID);
       // ... and resubscribe
       client.subscribe(inTopic);
     } else {
